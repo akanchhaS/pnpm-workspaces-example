@@ -1,0 +1,32 @@
+# This is a basic workflow to help you get started with Actions
+
+name: CI
+
+# Controls when the workflow will run
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+
+    steps:
+    - name: checkout
+      uses: actions/checkout@v2
+    
+    - name: npm/yarn/pnpm install
+      uses: Jaid/action-npm-install@v1.2.4
+      with:
+       packageManager: pnpm
+    
+    - uses: actions/setup-node@v2
+      with:
+        node-version: '14'
+    - run: npm i -g akanchha-snyk-pnpm-deptree-api-tool
+    - run: npm i -g snyk
+    - run: akanchha-snyk-pnpm-deptree-api-tool --root ./ -orgId snyk-policy-file-workshop --snykToken ${{ secrets.SNYK_TOKEN }} --monitor
